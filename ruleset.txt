@@ -1,0 +1,334 @@
+Prefices
+{
+    rdf  :  http://www.w3.org/1999/02/22-rdf-syntax-ns#
+    rdfs :  http://www.w3.org/2000/01/rdf-schema#
+    owl  :  http://www.w3.org/2002/07/owl#
+
+    ifc  : http://ifcowl.openbimstandards.org/IFC4x3#
+    ifcPlus : http://ifcowl.openbimstandards.org/IFC4x3plus#
+}
+
+Axioms
+{
+    // RDF basics
+    <rdf:type> <rdf:type> <rdf:Property>
+    <rdf:Property> <rdf:type> <rdfs:Class>
+
+    // RDFS basics
+    <rdfs:subClassOf> <rdf:type> <rdf:Property>
+    <rdfs:subPropertyOf> <rdf:type> <rdf:Property>
+    <rdfs:domain> <rdf:type> <rdf:Property>
+    <rdfs:range> <rdf:type> <rdf:Property>
+    <rdfs:Class> <rdf:type> <rdfs:Class>
+    <rdfs:Resource> <rdf:type> <rdfs:Class>
+
+    // OWL basics
+    <owl:TransitiveProperty> <rdf:type> <rdfs:Class>
+    <owl:SymmetricProperty> <rdf:type> <rdfs:Class>
+    <owl:InverseFunctionalProperty> <rdf:type> <rdfs:Class>
+    <owl:FunctionalProperty> <rdf:type> <rdfs:Class>
+    <owl:inverseOf> <rdf:type> <rdf:Property>
+    <owl:sameAs> <rdf:type> <rdf:Property>
+    <owl:equivalentClass> <rdf:type> <rdf:Property>
+    <owl:equivalentProperty> <rdf:type> <rdf:Property>
+
+    // IfcPlusDefinitions
+    <ifcPlus:FeedsIndirectly> <rdf:type> <owl:TransitiveProperty>
+    <ifc:IfcFlowSegment> <rdfs:subClassOf> <ifcPlus:FlowCarrier>
+    <ifc:IfcFlowFitting> <rdfs:subClassOf> <ifcPlus:FlowCarrier>
+
+}
+
+Rules
+{
+    // =========================================================
+    // RDFS: Class Inheritance
+    // =========================================================
+
+    Id: rdfsSubClassTransitive
+        a <rdfs:subClassOf> b
+        b <rdfs:subClassOf> c
+        -------------------------------
+        a <rdfs:subClassOf> c
+
+    Id: rdfsSubClassType
+        x <rdf:type> a
+        a <rdfs:subClassOf> b [Constraint b != blank_node]
+        -------------------------------
+        x <rdf:type> b
+
+    // =========================================================
+    // RDFS: Property Inheritance
+    // =========================================================
+
+    Id: rdfsSubPropTransitive
+        p <rdfs:subPropertyOf> q
+        q <rdfs:subPropertyOf> r
+        -------------------------------
+        p <rdfs:subPropertyOf> r
+
+    Id: rdfsSubPropInheritance
+        x p y
+        p <rdfs:subPropertyOf> q
+        -------------------------------
+        x q y
+
+    // =========================================================
+    // RDFS: Domain and Range
+    // =========================================================
+
+    Id: rdfsDomain
+        x p y
+        p <rdfs:domain> c [Constraint c != blank_node]
+        -------------------------------
+        x <rdf:type> c
+
+    Id: rdfsRange
+        x p y
+        p <rdfs:range> c [Constraint c != blank_node]
+        -------------------------------
+        y <rdf:type> c
+
+    // =========================================================
+    // OWL: Transitive Property
+    // =========================================================
+
+    Id: owlTransitiveProperty
+        p <rdf:type> <owl:TransitiveProperty>
+        x p y
+        y p z
+        -------------------------------
+        x p z
+
+    // =========================================================
+    // OWL: Symmetric Property
+    // =========================================================
+
+    Id: owlSymmetricProperty
+        p <rdf:type> <owl:SymmetricProperty>
+        x p y
+        -------------------------------
+        y p x
+
+    // =========================================================
+    // OWL: Inverse Property
+    // =========================================================
+
+    Id: owlInverseOf
+        p <owl:inverseOf> q
+        x p y
+        -------------------------------
+        y q x
+
+    Id: owlInverseOfReverse
+        p <owl:inverseOf> q
+        x q y
+        -------------------------------
+        y p x
+
+    // =========================================================
+    // OWL: sameAs (use with caution - can cause triple explosion)
+    // =========================================================
+
+    Id: owlSameAsSymmetric
+        x <owl:sameAs> y
+        -------------------------------
+        y <owl:sameAs> x
+
+    Id: owlSameAsTransitive
+        x <owl:sameAs> y
+        y <owl:sameAs> z
+        -------------------------------
+        x <owl:sameAs> z
+
+    Id: owlSameAsPropagateSubject
+        x <owl:sameAs> y
+        x p z
+        -------------------------------
+        y p z
+
+    Id: owlSameAsPropagateObject
+        x <owl:sameAs> y
+        z p x
+        -------------------------------
+        z p y
+
+    // =========================================================
+    // OWL: Equivalent Class
+    // =========================================================
+
+    Id: owlEquivalentClassSymmetric
+        a <owl:equivalentClass> b
+        -------------------------------
+        b <owl:equivalentClass> a
+
+    Id: owlEquivalentClassToSubClass
+        a <owl:equivalentClass> b
+        -------------------------------
+        a <rdfs:subClassOf> b
+
+    Id: owlEquivalentClassToSubClassReverse
+        a <owl:equivalentClass> b
+        -------------------------------
+        b <rdfs:subClassOf> a
+
+    // =========================================================
+    // OWL: Equivalent Property
+    // =========================================================
+
+    Id: owlEquivalentPropertySymmetric
+        p <owl:equivalentProperty> q
+        -------------------------------
+        q <owl:equivalentProperty> p
+
+    Id: owlEquivalentPropertyToSubProperty
+        p <owl:equivalentProperty> q
+        -------------------------------
+        p <rdfs:subPropertyOf> q
+
+    Id: owlEquivalentPropertyToSubPropertyReverse
+        p <owl:equivalentProperty> q
+        -------------------------------
+        q <rdfs:subPropertyOf> p
+
+    // =========================================================
+    // OWL: Functional Property (use with caution)
+    // =========================================================
+
+    Id: owlFunctionalProperty
+        p <rdf:type> <owl:FunctionalProperty>
+        x p y
+        x p z
+        -------------------------------
+        y <owl:sameAs> z
+
+    // =========================================================
+    // OWL: Inverse Functional Property (use with caution)
+    // =========================================================
+
+    Id: owlInverseFunctionalProperty
+        p <rdf:type> <owl:InverseFunctionalProperty>
+        x p z
+        y p z
+        -------------------------------
+        x <owl:sameAs> y
+
+    // =========================================================
+    // IFC: HasPropertySet
+    // =========================================================
+
+    Id: ifcHasPropertySet
+        object <rdf:type> <ifc:IfcObject>
+        object <ifc:IsDefinedBy> defBy
+        defBy <rdf:type> <ifc:IfcRelDefinesByProperties>
+        defBy <ifc:RelatingPropertyDefinition> pset
+        pset <rdf:type> <ifc:IfcPropertySet>
+        -------------------------------
+        object <ifcPlus:HasPropertySet> pset
+
+    // =========================================================
+    // IFC: HasLocation
+    // =========================================================
+
+    Id: ifcHasLocation
+        space <rdf:type> <ifc:IfcSpatialStructureElement>
+        space <ifc:ContainsElements> spatialStructure
+        spatialStructure <rdf:type> <ifc:IfcRelContainedInSpatialStructure>
+        spatialStructure <ifc:RelatedElements> relatedElement
+        relatedElement <rdf:type> <ifc:IfcDistributionElement>
+        -------------------------------
+        relatedElement <ifcPlus:HasLocation> space
+
+    // =========================================================
+    // IFC: HasPort
+    // =========================================================
+
+    Id: ifcHasPort
+        dis <rdf:type> <ifc:IfcDistributionElement>
+        dis <ifc:IsNestedBy> nests
+        nests <rdf:type> <ifc:IfcRelNests>
+        nests <ifc:RelatedObjects> port
+        port <rdf:type> <ifc:IfcDistributionPort>
+        -------------------------------
+        dis <ifcPlus:HasPort> port
+
+    // =========================================================
+    // IFC: FeedsPort
+    // =========================================================
+
+    Id: ifcFeedsPortA
+        sourcePort <rdf:type> <ifc:IfcDistributionPort>
+        sourcePort <ifc:FlowDirection> "SOURCE"
+        sinkPort <rdf:type> <ifc:IfcDistributionPort>
+        sinkPort <ifc:FlowDirection> "SINK"
+        con <rdf:type> <ifc:IfcRelConnectsPorts>
+        con <ifc:RelatedPort> sourcePort
+        con <ifc:RelatingPort> sinkPort
+        -------------------------------
+        sourcePort <ifcPlus:FeedsPort> sinkPort
+
+    Id: ifcFeedsPortB
+        sourcePort <rdf:type> <ifc:IfcDistributionPort>
+        sourcePort <ifc:FlowDirection> "SOURCE"
+        sinkPort <rdf:type> <ifc:IfcDistributionPort>
+        sinkPort <ifc:FlowDirection> "SINK"
+        con <rdf:type> <ifc:IfcRelConnectsPorts>
+        con <ifc:RelatingPort> sourcePort
+        con <ifc:RelatedPort> sinkPort
+        -------------------------------
+        sourcePort <ifcPlus:FeedsPort> sinkPort
+
+    // =========================================================
+    // IFC: Feeds
+    // =========================================================
+
+    Id: ifcFeeds
+        start <rdf:type> <ifc:IfcDistributionElement>
+        start <ifcPlus:HasPort> startPort
+        end <rdf:type> <ifc:IfcDistributionElement>
+        end <ifcPlus:HasPort> endPort
+        startPort <rdf:type> <ifc:IfcDistributionPort>
+        endPort <rdf:type> <ifc:IfcDistributionPort>
+        startPort <ifcPlus:FeedsPort> endPort
+        -------------------------------
+        start <ifcPlus:Feeds> end
+
+    // =========================================================
+    // IFC: FeedsIndirectly
+    // =========================================================
+
+    Id: ifcFeedsIndirectly
+        start <rdf:type> <ifcPlus:FlowCarrier>
+        start <ifcPlus:HasPort> startPort
+        end <rdf:type> <ifcPlus:FlowCarrier>
+	end <ifcPlus:HasPort> endPort
+	startPort <rdf:type> <ifc:IfcDistributionPort>
+	endPort <rdf:type> <ifc:IfcDistributionPort>
+	startPort <ifcPlus:FeedsPort> endPort
+    -------------------------------
+    start <ifcPlus:FeedsIndirectly> end
+
+    // =========================================================
+    // IFC: IsConnectedTo
+    // =========================================================
+
+    Id: ifcIsConnectedToDirect
+        start <rdf:type> <ifcPlus:Device>
+        start <ifcPlus:Feeds> pipe
+        pipe <rdf:type> <ifcPlus:FlowCarrier>
+        pipe <ifcPlus:Feeds> end
+        end <rdf:type> <ifcPlus:Device>
+        -------------------------------
+        start <ifcPlus:IsConnectedTo> end
+
+    Id: ifcIsConnectedToIndirect
+        start <rdf:type> <ifcPlus:Device>
+        start <ifcPlus:Feeds> startPipe
+        startPipe <rdf:type> <ifcPlus:FlowCarrier>
+        startPipe <ifcPlus:FeedsIndirectly> endPipe
+        endPipe <rdf:type> <ifcPlus:FlowCarrier>
+        endPipe <ifcPlus:Feeds> end
+        end <rdf:type> <ifcPlus:Device>
+        -------------------------------
+        start <ifcPlus:IsConnectedTo> end
+}
