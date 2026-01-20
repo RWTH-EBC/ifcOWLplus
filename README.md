@@ -56,7 +56,7 @@ These properties are inverses of each other.
 
 ### Property Set Relationships
 
-![HasPropertySet Diagram](doc/HasPropertySet.pdf)
+![HasPropertySet Diagram](doc/HasPropertySet.svg)
 
 #### ifcPlus:HasPropertySet / ifcPlus:IsPropertySetOf
 
@@ -74,7 +74,7 @@ These properties are inverses of each other.
 
 Ports are connection points on distribution elements. The IFC Plus ontology introduces shortcut properties that directly link elements to their ports without requiring traversal through `ifc:IfcRelNests` relationships.
 
-![Feeds Diagram](doc/Feeds.pdf)
+![Feeds Diagram](doc/Feeds.svg)
 
 #### ifcPlus:HasPort / ifcPlus:IsPortOf
 
@@ -113,7 +113,7 @@ These properties are inverses of each other.
 
 #### ifcPlus:FeedsIndirectly / ifcPlus:IsFedByIndirectly
 
-![ConnectsTo Diagram](doc/ConnectsTo.pdf)
+![ConnectsTo Diagram](doc/ConnectsTo.svg)
 
 The `ifcPlus:FeedsIndirectly` property is a **transitive property** that connects flow carriers (pipes, ducts, fittings) that are part of the same flow path, even when separated by multiple intermediate segments. Because this property is transitive, if element A feeds element B, and element B feeds element C, then A also feeds C indirectly.
 
