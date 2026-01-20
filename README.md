@@ -56,7 +56,7 @@ These properties are inverses of each other.
 
 ### Property Set Relationships
 
-![HasPropertySet Diagram](doc/HasPropertySet.svg)
+<img src="doc/HasPropertySet.svg" width="600">
 
 #### ifcPlus:HasPropertySet / ifcPlus:IsPropertySetOf
 
