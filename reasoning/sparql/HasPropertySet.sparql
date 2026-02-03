@@ -1,0 +1,14 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT { ?object ifcPlus:HasPropertySet ?pset }
+WHERE {
+    ?object a ifc:IfcObject ;
+        ifc:IsDefinedBy ?def_by .
+
+    ?def_by a ifc:IfcRelDefinesByProperties ;
+        ifc:RelatingPropertyDefinition ?pset .
+
+    ?pset a ifc:IfcPropertySet .
+        # ifc:Name "HLS" .
+}

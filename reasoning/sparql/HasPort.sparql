@@ -1,0 +1,11 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT { ?dis ifcPlus:HasPort ?port }
+WHERE {
+    ?dis a ifc:IfcDistributionElement ;
+    	ifc:IsNestedBy ?nests .
+    ?nests a ifc:IfcRelNests ;
+    	ifc:RelatedObjects ?port .
+    ?port a ifc:IfcDistributionPort .
+}

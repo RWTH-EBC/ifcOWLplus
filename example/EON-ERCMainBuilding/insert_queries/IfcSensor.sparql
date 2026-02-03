@@ -1,0 +1,20 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX bldg: <http://example.org/building#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT {
+    ?brickSensor rdf:type brick:Temperature_Sensor .
+    ?brickSetpoint rdf:type brick:Temperature_Setpoint .
+
+    ?sensor brick:hasPoint ?brickSensor ,
+		?brickSetpoint .
+}
+WHERE {
+    ?sensor a ifc:IfcSensor .
+    ?sensor ifc:PredefinedType "TEMPERATURESENSOR" .
+
+    BIND(IRI(CONCAT("http://example.org/building#", STRUUID())) AS ?brickSensor)
+    BIND(IRI(CONCAT("http://example.org/building#", STRUUID())) AS ?brickSetpoint)
+}

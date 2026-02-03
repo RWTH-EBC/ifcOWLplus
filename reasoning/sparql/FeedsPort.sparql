@@ -1,0 +1,18 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT { ?source_port ifcPlus:FeedsPort ?sink_port }
+WHERE {
+    VALUES ?pre1 { ifc:RelatedPort ifc:RelatingPort }
+    VALUES ?pre2 { ifc:RelatingPort ifc:RelatedPort }
+
+    ?source_port a ifc:IfcDistributionPort ;
+    	ifc:FlowDirection "SOURCE" .
+    ?sink_port a ifc:IfcDistributionPort ;
+    	ifc:FlowDirection "SINK" .
+
+    ?con a ifc:IfcRelConnectsPorts .
+
+    ?con ?pre1 ?source_port .
+    ?con ?pre2 ?sink_port .
+}

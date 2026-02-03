@@ -1,0 +1,18 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+# SELECT *
+INSERT {?device a ifcPlus:Device }
+WHERE {
+    VALUES ?type {
+        ifc:IfcFlowController
+        ifc:IfcFlowTreatmentDevice
+        ifc:IfcEnergyConversionDevice
+        ifc:IfcFlowTerminal
+        ifc:IfcFlowMovingDevice
+        ifc:IfcFlowStorageDevice
+        ifc:IfcDistributionControlElement
+    }
+    ?device a ?type .
+    # FILTER NOT EXISTS { ?device ifc:PredefinedType "CHECK" . }
+}

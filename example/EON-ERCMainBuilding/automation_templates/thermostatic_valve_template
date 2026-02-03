@@ -1,0 +1,33 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX bldg: <http://example.org/building#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+INSERT {
+
+    ?space ifcPlus:HasPropertySet ?pSet .
+
+    ?pSet a ifc:IfcPropertySet ;
+    	ifc:Name "Pset_SpaceHVACDesign" .
+
+    ?pSet ifc:HasProperties ?tempMin .
+    ?pSet ifc:HasProperties ?tempMax .
+
+    ?tempMin a ifc:IfcPropertySingleValue ;
+    	ifc:Name "TemperatureMin"^^xsd:string ;
+    	ifc:NominalValue "19"^^xsd:double  .
+
+	?tempMax a ifc:IfcPropertySingleValue ;
+    	ifc:Name "TemperatureMax"^^xsd:string ;
+    	ifc:NominalValue "21"^^xsd:double .
+
+}
+WHERE {
+    ?space a ifc:IfcSpace .
+
+	BIND(IRI(CONCAT("http://example.org/building#", STRUUID())) AS ?pSet)
+	BIND(IRI(CONCAT("http://example.org/building#", STRUUID())) AS ?tempMin)
+	BIND(IRI(CONCAT("http://example.org/building#", STRUUID())) AS ?tempMax)
+}

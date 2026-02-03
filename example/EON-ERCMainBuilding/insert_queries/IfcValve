@@ -1,0 +1,21 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+PREFIX brick: <https://brickschema.org/schema/Brick#>
+PREFIX bldg: <http://example.org/building#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT {
+    ?brickPositionSensor rdf:type brick:Position_Sensor .
+    ?brickPositionCommand rdf:type brick:Position_Setpoint .
+
+    ?sensor brick:hasPoint ?brickPositionSensor ,
+		?brickPositionCommand .
+}
+WHERE {
+    ?sensor a ifc:IfcValve .
+    ?sensor ifc:PredefinedType ?type .
+    FILTER(?type IN ("REGULATING", "MIXING"))
+
+    BIND(IRI(CONCAT("http://example.org/building#", STRUUID())) AS ?brickPositionSensor)
+    BIND(IRI(CONCAT("http://example.org/building#", STRUUID())) AS ?brickPositionCommand)
+}

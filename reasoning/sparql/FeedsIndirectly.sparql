@@ -1,0 +1,15 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT { ?start ifcPlus:FeedsIndirectly ?end }
+WHERE {
+    VALUES ?tpe1 { ifc:IfcFlowSegment ifc:IfcFlowFitting }
+    VALUES ?tpe2 { ifc:IfcFlowSegment ifc:IfcFlowFitting }
+    ?start a ?tpe1 ;
+    	ifcPlus:HasPort ?start_port .
+    ?end a ?tpe2 ;
+    	ifcPlus:HasPort ?end_port .
+    ?start_port a ifc:IfcDistributionPort .
+    ?end_port a ifc:IfcDistributionPort .
+    ?start_port ifcPlus:FeedsPort ?end_port .
+}

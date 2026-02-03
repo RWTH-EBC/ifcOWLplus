@@ -1,0 +1,12 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT { ?related_element ifcPlus:HasLocation ?space }
+
+WHERE {
+    ?space a ifc:IfcSpatialStructureElement ;
+        ifc:ContainsElements ?spacial_structure .
+    ?spacial_structure a ifc:IfcRelContainedInSpatialStructure ;
+        ifc:RelatedElements ?related_element .
+    ?related_element a ifc:IfcDistributionElement .
+}

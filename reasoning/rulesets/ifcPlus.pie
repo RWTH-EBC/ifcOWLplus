@@ -1,0 +1,134 @@
+Prefices
+{
+     ifc  : http://ifcowl.openbimstandards.org/IFC4x3#
+    ifcPlus : http://ifcowl.openbimstandards.org/IFC4x3plus#
+}
+
+Axioms
+{
+    <ifcPlus:FeedsIndirectly> <rdf:type> <owl:TransitiveProperty>
+    <ifc:IfcFlowSegment> <rdfs:subClassOf> <ifcPlus:FlowCarrier>
+    <ifc:IfcFlowFitting> <rdfs:subClassOf> <ifcPlus:FlowCarrier>
+}
+
+Rules
+{
+    // =========================================================
+    // IFC: HasPropertySet
+    // =========================================================
+
+    Id: ifcHasPropertySet
+        object <rdf:type> <ifc:IfcObject>
+        object <ifc:IsDefinedBy> defBy
+        defBy <rdf:type> <ifc:IfcRelDefinesByProperties>
+        defBy <ifc:RelatingPropertyDefinition> pset
+        pset <rdf:type> <ifc:IfcPropertySet>
+        -------------------------------
+        object <ifcPlus:HasPropertySet> pset
+
+    // =========================================================
+    // IFC: HasLocation
+    // =========================================================
+
+    Id: ifcHasLocation
+        space <rdf:type> <ifc:IfcSpatialStructureElement>
+        space <ifc:ContainsElements> spatialStructure
+        spatialStructure <rdf:type> <ifc:IfcRelContainedInSpatialStructure>
+        spatialStructure <ifc:RelatedElements> relatedElement
+        relatedElement <rdf:type> <ifc:IfcDistributionElement>
+        -------------------------------
+        relatedElement <ifcPlus:HasLocation> space
+
+    // =========================================================
+    // IFC: HasPort
+    // =========================================================
+
+    Id: ifcHasPort
+        dis <rdf:type> <ifc:IfcDistributionElement>
+        dis <ifc:IsNestedBy> nests
+        nests <rdf:type> <ifc:IfcRelNests>
+        nests <ifc:RelatedObjects> port
+        port <rdf:type> <ifc:IfcDistributionPort>
+        -------------------------------
+        dis <ifcPlus:HasPort> port
+
+    // =========================================================
+    // IFC: FeedsPort
+    // =========================================================
+
+    Id: ifcFeedsPortA
+        sourcePort <rdf:type> <ifc:IfcDistributionPort>
+        sourcePort <ifc:FlowDirection> "SOURCE"
+        sinkPort <rdf:type> <ifc:IfcDistributionPort>
+        sinkPort <ifc:FlowDirection> "SINK"
+        con <rdf:type> <ifc:IfcRelConnectsPorts>
+        con <ifc:RelatedPort> sourcePort
+        con <ifc:RelatingPort> sinkPort
+        -------------------------------
+        sourcePort <ifcPlus:FeedsPort> sinkPort
+
+    Id: ifcFeedsPortB
+        sourcePort <rdf:type> <ifc:IfcDistributionPort>
+        sourcePort <ifc:FlowDirection> "SOURCE"
+        sinkPort <rdf:type> <ifc:IfcDistributionPort>
+        sinkPort <ifc:FlowDirection> "SINK"
+        con <rdf:type> <ifc:IfcRelConnectsPorts>
+        con <ifc:RelatingPort> sourcePort
+        con <ifc:RelatedPort> sinkPort
+        -------------------------------
+        sourcePort <ifcPlus:FeedsPort> sinkPort
+
+    // =========================================================
+    // IFC: Feeds
+    // =========================================================
+
+    Id: ifcFeeds
+        start <rdf:type> <ifc:IfcDistributionElement>
+        start <ifcPlus:HasPort> startPort
+        end <rdf:type> <ifc:IfcDistributionElement>
+        end <ifcPlus:HasPort> endPort
+        startPort <rdf:type> <ifc:IfcDistributionPort>
+        endPort <rdf:type> <ifc:IfcDistributionPort>
+        startPort <ifcPlus:FeedsPort> endPort
+        -------------------------------
+        start <ifcPlus:Feeds> end
+
+    // =========================================================
+    // IFC: FeedsIndirectly
+    // =========================================================
+
+    Id: ifcFeedsIndirectly
+        start <rdf:type> <ifcPlus:FlowCarrier>
+        start <ifcPlus:HasPort> startPort
+        end <rdf:type> <ifcPlus:FlowCarrier>
+	end <ifcPlus:HasPort> endPort
+	startPort <rdf:type> <ifc:IfcDistributionPort>
+	endPort <rdf:type> <ifc:IfcDistributionPort>
+	startPort <ifcPlus:FeedsPort> endPort
+    -------------------------------
+    start <ifcPlus:FeedsIndirectly> end
+
+    // =========================================================
+    // IFC: IsConnectedTo
+    // =========================================================
+
+    Id: ifcIsConnectedToDirect
+        start <rdf:type> <ifcPlus:Device>
+        start <ifcPlus:Feeds> pipe
+        pipe <rdf:type> <ifcPlus:FlowCarrier>
+        pipe <ifcPlus:Feeds> end
+        end <rdf:type> <ifcPlus:Device>
+        -------------------------------
+        start <ifcPlus:IsConnectedTo> end
+
+    Id: ifcIsConnectedToIndirect
+        start <rdf:type> <ifcPlus:Device>
+        start <ifcPlus:Feeds> startPipe
+        startPipe <rdf:type> <ifcPlus:FlowCarrier>
+        startPipe <ifcPlus:FeedsIndirectly> endPipe
+        endPipe <rdf:type> <ifcPlus:FlowCarrier>
+        endPipe <ifcPlus:Feeds> end
+        end <rdf:type> <ifcPlus:Device>
+        -------------------------------
+        start <ifcPlus:IsConnectedTo> end
+}
