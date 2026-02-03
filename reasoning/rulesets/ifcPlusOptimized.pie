@@ -32,11 +32,6 @@ Axioms
     <owl:equivalentClass> <rdf:type> <rdf:Property>
     <owl:equivalentProperty> <rdf:type> <rdf:Property>
 
-    // IfcPlusDefinitions
-    <ifcPlus:FeedsIndirectly> <rdf:type> <owl:TransitiveProperty>
-    <ifc:IfcFlowSegment> <rdfs:subClassOf> <ifcPlus:FlowCarrier>
-    <ifc:IfcFlowFitting> <rdfs:subClassOf> <ifcPlus:FlowCarrier>
-
 }
 
 Rules
@@ -299,36 +294,67 @@ Rules
 
     Id: ifcFeedsIndirectly
         start <rdf:type> <ifcPlus:FlowCarrier>
-        start <ifcPlus:HasPort> startPort
+        startPort <rdf:type> <ifc:IfcDistributionPort>
+        endPort <rdf:type> <ifc:IfcDistributionPort>
         end <rdf:type> <ifcPlus:FlowCarrier>
-	end <ifcPlus:HasPort> endPort
-	startPort <rdf:type> <ifc:IfcDistributionPort>
-	endPort <rdf:type> <ifc:IfcDistributionPort>
-	startPort <ifcPlus:FeedsPort> endPort
-    -------------------------------
-    start <ifcPlus:FeedsIndirectly> end
+
+        start <ifcPlus:HasPort> startPort
+        startPort <ifcPlus:FeedsPort> endPort
+        end <ifcPlus:HasPort> endPort
+        -------------------------------
+        start <ifcPlus:FeedsIndirectly> end
 
     // =========================================================
     // IFC: IsConnectedTo
     // =========================================================
 
-    Id: ifcIsConnectedToDirect
+    Id: ifcIsConnectedToByPipeDirect
         start <rdf:type> <ifcPlus:Device>
         start <ifcPlus:Feeds> pipe
-        pipe <rdf:type> <ifcPlus:FlowCarrier>
+
+        pipe <rdf:type> <ifcPlus:Pipe>
         pipe <ifcPlus:Feeds> end
+
         end <rdf:type> <ifcPlus:Device>
         -------------------------------
-        start <ifcPlus:IsConnectedTo> end
+        start <ifcPlus:IsConnectedToByPipe> end
 
-    Id: ifcIsConnectedToIndirect
+    Id: ifcIsConnectedToByPipeIndirect
         start <rdf:type> <ifcPlus:Device>
         start <ifcPlus:Feeds> startPipe
-        startPipe <rdf:type> <ifcPlus:FlowCarrier>
+
+        startPipe <rdf:type> <ifcPlus:Pipe>
         startPipe <ifcPlus:FeedsIndirectly> endPipe
-        endPipe <rdf:type> <ifcPlus:FlowCarrier>
+
+        endPipe <rdf:type> <ifcPlus:Pipe>
         endPipe <ifcPlus:Feeds> end
+
         end <rdf:type> <ifcPlus:Device>
         -------------------------------
-        start <ifcPlus:IsConnectedTo> end
+        start <ifcPlus:IsConnectedToByPipe> end
+
+    Id: ifcIsConnectedToByDuctDirect
+        start <rdf:type> <ifcPlus:Device>
+        start <ifcPlus:Feeds> duct
+
+        duct <rdf:type> <ifcPlus:Duct>
+        duct <ifcPlus:Feeds> end
+
+        end <rdf:type> <ifcPlus:Device>
+        -------------------------------
+        start <ifcPlus:IsConnectedToByDuct> end
+
+    Id: ifcIsConnectedToByDuctIndirect
+        start <rdf:type> <ifcPlus:Device>
+        start <ifcPlus:Feeds> startDuct
+
+        startDuct <rdf:type> <ifcPlus:Duct>
+        startDuct <ifcPlus:FeedsIndirectly> endDuct
+
+        endDuct <rdf:type> <ifcPlus:Duct>
+        endDuct <ifcPlus:Feeds> end
+
+        end <rdf:type> <ifcPlus:Device>
+        -------------------------------
+        start <ifcPlus:IsConnectedToByDuct> end
 }
