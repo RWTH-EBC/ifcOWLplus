@@ -29,14 +29,16 @@ ifcPlus:FlowCarrier a owl:Class ;
 ifc:IfcFlowSegment rdfs:subClassOf ifcPlus:FlowCarrier .
 ifc:IfcFlowFitting rdfs:subClassOf ifcPlus:FlowCarrier .
 
-ifcPlus:Pipe rdfs:SubClassOf ifcPlus:FlowCarrier ;
+ifcPlus:Pipe a owl:Class ;
+    rdfs:subClassOf ifcPlus:FlowCarrier ;
     rdfs:label "Pipe Carrier" ;
     rdfs:comment "A Pipe Carrier is any IfcDistributionElement that is either ifc:IfcFlowSegment or ifc:IfcFlowFitting that carries fluid through pipes." .
 
 ifc:IfcPipeSegment rdfs:subClassOf ifcPlus:Pipe .
 ifc:IfcPipeFitting rdfs:subClassOf ifcPlus:Pipe .
 
-ifcPlus:Duct rdfs:SubClassOf ifcPlus:FlowCarrier ;
+ifcPlus:Duct a owl:Class ;
+    rdfs:subClassOf ifcPlus:FlowCarrier ;
     rdfs:label "Duct Carrier" ;
     rdfs:comment "A Duct Carrier is any IfcDistributionElement that is either ifc:IfcFlowSegment or ifc:IfcFlowFitting that carries air through ducts." .
 
