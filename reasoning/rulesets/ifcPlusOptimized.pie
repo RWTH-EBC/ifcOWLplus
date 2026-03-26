@@ -3,6 +3,7 @@ Prefices
     rdf  :  http://www.w3.org/1999/02/22-rdf-syntax-ns#
     rdfs :  http://www.w3.org/2000/01/rdf-schema#
     owl  :  http://www.w3.org/2002/07/owl#
+    xsd  :  http://www.w3.org/2001/XMLSchema#
 
     ifc  : http://ifcowl.openbimstandards.org/IFC4x3#
     ifcPlus : http://ifcowl.openbimstandards.org/IFC4x3plus#
@@ -233,6 +234,38 @@ Rules
         relatedElement <rdf:type> <ifc:IfcDistributionElement>
         -------------------------------
         relatedElement <ifcPlus:HasLocation> space
+
+    // =========================================================
+    // IFC: HasWall
+    // =========================================================
+
+    Id: ifcHasWall
+        space <rdf:type> <ifc:IfcSpace>
+        relSpaceBoundary <rdf:type> <ifc:IfcRelSpaceBoundary>
+        relSpaceBoundary <ifc:RelatingSpace> space
+        relSpaceBoundary <ifc:RelatedBuildingElement> wall
+        wall <rdf:type> <ifc:IfcWall>
+        -------------------------------
+        space <ifcPlus:HasWall> wall
+
+    // =========================================================
+    // IFC: isExternal (space)
+    // =========================================================
+
+    Id: ifcSpaceIsExternal_bool
+        space <rdf:type> <ifc:IfcSpace>
+        space <ifcPlus:HasWall> wall
+        wall <rdf:type> <ifc:IfcWall>
+
+        wall <ifcPlus:HasPropertySet> pset
+        pset <rdf:type> <ifc:IfcPropertySet>
+        pset <ifc:Name> "Pset_WallCommon"
+        pset <ifc:HasProperties> prop
+
+        prop <ifc:Name> "IsExternal"
+        prop <ifc:NominalValue> "true"^^xsd:boolean
+        -------------------------------
+        space <ifcPlus:isExternal> "true"^^xsd:boolean
 
     // =========================================================
     // IFC: HasPort
