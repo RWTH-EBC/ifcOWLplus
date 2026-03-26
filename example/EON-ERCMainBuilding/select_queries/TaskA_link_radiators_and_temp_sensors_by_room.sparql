@@ -1,0 +1,16 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+SELECT ?spaceName ?radiatorId ?tempId
+WHERE {
+  ?space a ifc:IfcSpace ;
+      ifc:Name ?spaceName .
+  ?radiator a ifc:IfcSpaceHeater ;
+         ifc:PredefinedType "RADIATOR" ;
+         ifcPlus:HasLocation ?space ;
+         ifc:GlobalId ?radiatorId .
+  ?temp a ifc:IfcSensor ;
+     ifc:PredefinedType "TEMPERATURESENSOR" ;
+     ifcPlus:HasLocation ?space ;
+     ifc:GlobalId ?tempId .
+}

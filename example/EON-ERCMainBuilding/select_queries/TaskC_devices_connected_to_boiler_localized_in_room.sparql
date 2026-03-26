@@ -1,0 +1,15 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+SELECT ?name
+WHERE {
+  ?boiler a ifc:IfcBoiler ;
+      ifcPlus:IsConnectedTo* ?device .
+
+  ?device a ifcPlus:Device ;
+      ifcPlus:HasLocation ?space ;
+      ifc:Name ?name .
+
+  ?space a ifc:IfcSpace ;
+     ifc:Name "42" .
+}

@@ -1,0 +1,17 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+SELECT DISTINCT ?spaceName ?tempId
+WHERE {
+  ?coil a ifc:IfcCoil ;
+      ifc:GlobalId "1izbNUApXAqP4X3VNz0DYj" ;
+      ifcPlus:IsConnectedTo* ?airTerminal .
+  ?airTerminal a ifc:IfcAirTerminal ;
+      ifcPlus:HasLocation ?space .
+  ?space a ifc:IfcSpace ;
+       ifc:Name ?spaceName .
+  ?tempSens a ifc:IfcSensor ;
+    ifc:PredefinedType "TEMPERATURESENSOR" ;
+    ifcPlus:HasLocation ?space ;
+    ifc:GlobalId ?tempId .
+}
