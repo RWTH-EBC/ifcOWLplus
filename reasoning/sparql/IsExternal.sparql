@@ -1,0 +1,19 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT { ?space ifcPlus:isExternal true }
+WHERE {
+    ?space a ifc:IfcSpace ;
+        ifcPlus:HasWall ?wall .
+
+    ?wall a ifc:IfcWall ;
+        ifcPlus:HasPropertySet ?pSet .
+
+    ?pSet ifc:Name "Pset_WallCommon" ;
+        ifc:HasProperties ?prop .
+
+    ?prop ifc:Name "IsExternal" ;
+        ifc:NominalValue ?val .
+
+    FILTER (str(?val) = "true")
+}

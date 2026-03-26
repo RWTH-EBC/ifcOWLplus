@@ -1,27 +1,16 @@
 PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
 PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
 
-INSERT { ?start ifcPlus:ReturnsAir ?end }
+INSERT { ?start ifcPlus:IsConnectedToByDuct ?end }
 WHERE {
-    VALUES ?start_pipe_type { ifc:IfcFlowSegment ifc:IfcFlowFitting }
-    VALUES ?end_pipe_type { ifc:IfcFlowSegment ifc:IfcFlowFitting }
-
     ?start a ifcPlus:Device ;
         ifcPlus:Feeds ?start_pipe .
 
-    ?start_pipe a ?start_pipe_type ;
-        ifcPlus:FeedsIndirectly? ?end_pipe .
+    ?start_pipe a ifcPlus:Duct ;
+        ifcPlus:FeedsIndirectly* ?end_pipe .
 
-    ?end_pipe a ?end_pipe_type ;
+    ?end_pipe a ifcPlus:Duct ;
         ifcPlus:Feeds ?end .
 
     ?end a ifcPlus:Device .
-
-    ?end_pipe ifcPlus:HasPropertySet ?pset2 .
-    ?pset2 a ifc:IfcPropertySet ;
-    	ifc:Name "HLS" ;
-    	ifc:HasProperties ?single_value2 .
-    ?single_value2 a ifc:IfcPropertySingleValue ;
-    	ifc:Name "Systemklassifizierung" ;
-    	ifc:NominalValue "Abluft" .
 }

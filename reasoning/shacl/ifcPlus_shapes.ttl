@@ -1,0 +1,273 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ifc: <http://ifcowl.openbimstandards.org/IFC4x3#> .
+@prefix ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#> .
+
+ifcPlus:DeviceShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcDistributionElement ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this a ifcPlus:Device .
+            }
+            WHERE {
+                VALUES ?type {
+                    ifc:IfcFlowController
+                    ifc:IfcFlowTreatmentDevice
+                    ifc:IfcEnergyConversionDevice
+                    ifc:IfcFlowTerminal
+                    ifc:IfcFlowMovingDevice
+                    ifc:IfcFlowStorageDevice
+                    ifc:IfcDistributionControlElement
+                }
+                $this a ?type .
+            }
+        """ ;
+    ] .
+
+ifcPlus:FeedsShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcDistributionElement ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:Feeds ?end .
+            }
+            WHERE {
+                $this ifcPlus:HasPort ?start_port .
+                
+                ?end a ifc:IfcDistributionElement ;
+                    ifcPlus:HasPort ?end_port .
+
+                ?start_port a ifc:IfcDistributionPort ;
+                            ifcPlus:FeedsPort ?end_port .
+                ?end_port a ifc:IfcDistributionPort .
+            }
+        """ ;
+    ] .
+
+ifcPlus:FeedsIndirectlyShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcDistributionElement ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:FeedsIndirectly ?end .
+            }
+            WHERE {
+                VALUES ?tpe1 { ifc:IfcFlowSegment ifc:IfcFlowFitting }
+                VALUES ?tpe2 { ifc:IfcFlowSegment ifc:IfcFlowFitting }
+                
+                $this a ?tpe1 ;
+                    ifcPlus:HasPort ?start_port .
+                    
+                ?end a ?tpe2 ;
+                    ifcPlus:HasPort ?end_port .
+                    
+                ?start_port a ifc:IfcDistributionPort ;
+                            ifcPlus:FeedsPort ?end_port .
+                ?end_port a ifc:IfcDistributionPort .
+            }
+        """ ;
+    ] .
+
+ifcPlus:FeedsPortShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcDistributionPort ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:FeedsPort ?sink_port .
+            }
+            WHERE {
+                VALUES ?pre1 { ifc:RelatedPort ifc:RelatingPort }
+                VALUES ?pre2 { ifc:RelatingPort ifc:RelatedPort }
+
+                $this ifc:FlowDirection "SOURCE" .
+                
+                ?sink_port a ifc:IfcDistributionPort ;
+                    ifc:FlowDirection "SINK" .
+
+                ?con a ifc:IfcRelConnectsPorts ;
+                     ?pre1 $this ;
+                     ?pre2 ?sink_port .
+            }
+        """ ;
+    ] .
+
+ifcPlus:HasLocationShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcSpatialStructureElement ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                ?related_element ifcPlus:HasLocation $this .
+            }
+            WHERE {
+                $this ifc:ContainsElements ?spacial_structure .
+                ?spacial_structure a ifc:IfcRelContainedInSpatialStructure ;
+                                   ifc:RelatedElements ?related_element .
+                ?related_element a ifc:IfcDistributionElement .
+            }
+        """ ;
+    ] .
+
+ifcPlus:HasWallShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcSpace ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:HasWall ?wall .
+            }
+            WHERE {
+                ?relSpaceBoundary a ifc:IfcRelSpaceBoundary ;
+                    ifc:RelatingSpace $this ;
+                    ifc:RelatedBuildingElement ?wall .
+
+                ?wall a ifc:IfcWall .
+            }
+        """ ;
+    ] .
+
+ifcPlus:HasPortShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcDistributionElement ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:HasPort ?port .
+            }
+            WHERE {
+                $this ifc:IsNestedBy ?nests .
+                ?nests a ifc:IfcRelNests ;
+                       ifc:RelatedObjects ?port .
+                ?port a ifc:IfcDistributionPort .
+            }
+        """ ;
+    ] .
+
+ifcPlus:HasPropertySetShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcObject ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:HasPropertySet ?pset .
+            }
+            WHERE {
+                $this ifc:IsDefinedBy ?def_by .
+
+                ?def_by a ifc:IfcRelDefinesByProperties ;
+                        ifc:RelatingPropertyDefinition ?pset .
+
+                ?pset a ifc:IfcPropertySet .
+            }
+        """ ;
+    ] .
+
+ifcPlus:IsExternalSpaceShape
+    a sh:NodeShape ;
+    sh:targetClass ifc:IfcSpace ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:isExternal true .
+            }
+            WHERE {
+                $this ifcPlus:HasWall ?wall .
+
+                ?wall a ifc:IfcWall ;
+                    ifcPlus:HasPropertySet ?pSet .
+
+                ?pSet ifc:Name "Pset_WallCommon" ;
+                    ifc:HasProperties ?prop .
+
+                ?prop ifc:Name "IsExternal" ;
+                    ifc:NominalValue ?val .
+
+                FILTER (str(?val) = "true")
+            }
+        """ ;
+    ] .
+
+ifcPlus:IsConnectedToShape
+    a sh:NodeShape ;
+    sh:targetClass ifcPlus:Device ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:IsConnectedTo ?end .
+            }
+            WHERE {
+                VALUES ?start_pipe_type { ifc:IfcFlowSegment ifc:IfcFlowFitting }
+                VALUES ?end_pipe_type { ifc:IfcFlowSegment ifc:IfcFlowFitting }
+
+                $this ifcPlus:Feeds ?start_pipe .
+
+                ?start_pipe a ?start_pipe_type ;
+                            ifcPlus:FeedsIndirectly ?end_pipe .
+
+                ?end_pipe a ?end_pipe_type ;
+                          ifcPlus:Feeds ?end .
+
+                ?end a ifcPlus:Device .
+            }
+        """ ;
+    ] .
+
+ifcPlus:IsConnectedToByPipeShape
+    a sh:NodeShape ;
+    sh:targetClass ifcPlus:Device ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:IsConnectedToByPipe ?end .
+            }
+            WHERE {
+                $this ifcPlus:Feeds ?start_pipe .
+
+                ?start_pipe a ifcPlus:Pipe ;
+                            ifcPlus:FeedsIndirectly* ?end_pipe .
+
+                ?end_pipe a ifcPlus:Pipe ;
+                          ifcPlus:Feeds ?end .
+
+                ?end a ifcPlus:Device .
+            }
+        """ ;
+    ] .
+
+ifcPlus:IsConnectedToByDuctShape
+    a sh:NodeShape ;
+    sh:targetClass ifcPlus:Device ;
+    sh:rule [
+        a sh:SPARQLRule ;
+        sh:construct """
+            CONSTRUCT {
+                $this ifcPlus:IsConnectedToByDuct ?end .
+            }
+            WHERE {
+                $this ifcPlus:Feeds ?start_duct .
+
+                ?start_duct a ifcPlus:Duct ;
+                            ifcPlus:FeedsIndirectly* ?end_duct .
+
+                ?end_duct a ifcPlus:Duct ;
+                          ifcPlus:Feeds ?end .
+
+                ?end a ifcPlus:Device .
+            }
+        """ ;
+    ] .

@@ -1,0 +1,13 @@
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT { ?space ifcPlus:HasWall ?wall }
+WHERE {
+    ?space a ifc:IfcSpace .
+
+    ?relSpaceBoundary a ifc:IfcRelSpaceBoundary ;
+        ifc:RelatingSpace ?space ;
+        ifc:RelatedBuildingElement ?wall .
+
+    ?wall a ifc:IfcWall .
+}
