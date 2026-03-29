@@ -1,0 +1,207 @@
+{
+  "head": {
+    "vars": [
+      "path",
+      "index",
+      "end",
+      "name",
+      "type"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "path": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "index": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "end": {
+          "type": "uri",
+          "value": "http://example.org/building#120640"
+        },
+        "name": {
+          "type": "literal",
+          "value": "Heizkörper Plan Durchgangsventil:Links:7522477"
+        },
+        "type": {
+          "type": "literal",
+          "value": "RADIATOR"
+        }
+      },
+      {
+        "path": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "index": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "1"
+        },
+        "end": {
+          "type": "uri",
+          "value": "http://example.org/building#115282"
+        },
+        "name": {
+          "type": "literal",
+          "value": "Schrägsitzventil DN 12 - 50 - Gewinde:ND 15:7522482"
+        },
+        "type": {
+          "type": "literal",
+          "value": "REGULATING"
+        }
+      },
+      {
+        "path": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "index": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "2"
+        },
+        "end": {
+          "type": "uri",
+          "value": "http://example.org/building#151126"
+        },
+        "name": {
+          "type": "literal",
+          "value": "Rückschlagklappe - Flansch:Standard:7520880"
+        },
+        "type": {
+          "type": "literal",
+          "value": "CHECK"
+        }
+      },
+      {
+        "path": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "index": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "3"
+        },
+        "end": {
+          "type": "uri",
+          "value": "http://example.org/building#241506"
+        },
+        "name": {
+          "type": "literal",
+          "value": "Schrägsitzventil DN 12 - 50 - Gewinde:ND 32:7536976"
+        },
+        "type": {
+          "type": "literal",
+          "value": "SAFETYCUTOFF"
+        }
+      },
+      {
+        "path": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "index": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "4"
+        },
+        "end": {
+          "type": "uri",
+          "value": "http://example.org/building#260263"
+        },
+        "name": {
+          "type": "literal",
+          "value": "TemperatureSensorPipe:2138 - DN32 - G1\"1/4 - MF (213 0019):7638172"
+        },
+        "type": {
+          "type": "literal",
+          "value": "TEMPERATURESENSOR"
+        }
+      },
+      {
+        "path": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "index": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "5"
+        },
+        "end": {
+          "type": "uri",
+          "value": "http://example.org/building#260164"
+        },
+        "name": {
+          "type": "literal",
+          "value": "Pumpe allgemein - Gewinde:DN25:7643209"
+        },
+        "type": {
+          "type": "literal",
+          "value": "CIRCULATOR"
+        }
+      },
+      {
+        "path": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "index": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "6"
+        },
+        "end": {
+          "type": "uri",
+          "value": "http://example.org/building#260554"
+        },
+        "name": {
+          "type": "literal",
+          "value": "Three Way Valve Generic:3/4\" Motorised three-way ball valve 230V “L” drilling:7643206"
+        },
+        "type": {
+          "type": "literal",
+          "value": "MIXING"
+        }
+      },
+      {
+        "path": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "0"
+        },
+        "index": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#int",
+          "type": "literal",
+          "value": "7"
+        },
+        "end": {
+          "type": "uri",
+          "value": "http://example.org/building#287543"
+        },
+        "name": {
+          "type": "literal",
+          "value": "Rückschlagklappe - Flansch:Standard:7643217"
+        },
+        "type": {
+          "type": "literal",
+          "value": "CHECK"
+        }
+      }
+    ]
+  }
+}
