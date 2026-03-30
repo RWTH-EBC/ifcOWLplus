@@ -1,4 +1,3 @@
-
 # IFC Plus Ontology Documentation
 
 ## Overview
@@ -11,11 +10,11 @@ The IFC Plus ontology (`ifcPlus`) extends the standard IFC4x3 ontology (`ifc`) w
 
 ---
 
-## Classes
+## Core Classes
 
 ### ifcPlus:Device
 
-A **Device** is any `ifc:IfcDistributionFlowElement` that is not an `ifc:IfcFlowSegment` or `ifc:IfcFlowFitting`. Devices represent active or functional components within a distribution system, such as valves, pumps, boilers, or terminals.
+A **Device** is an operationally relevant distribution element (e.g., pumps, valves, coils, terminals, sensors/controllers). In ifcPlus, this class is used to express **device-level functional connectivity** while abstracting away intermediate carriers.
 
 The following IFC classes are defined as subclasses of `ifcPlus:Device`:
 
@@ -29,17 +28,20 @@ The following IFC classes are defined as subclasses of `ifcPlus:Device`:
 
 ### ifcPlus:FlowCarrier
 
-A **Flow Carrier** is any `ifc:IfcDistributionElement` that serves to transport a medium (such as water, air, or electricity) between devices. Flow carriers are passive conduits rather than functional equipment.
+A **Flow Carrier** represents passive network elements whose primary purpose is to route a medium. This includes segments and fittings (e.g., pipes/ducts and their elbows, tees, junctions).
 
 The following IFC classes are defined as subclasses of `ifcPlus:FlowCarrier`:
 
 - `ifc:IfcFlowSegment` — pipes, ducts, cables
 - `ifc:IfcFlowFitting` — elbows, tees, junctions
 
+Specializations:
+- `ifcPlus:Pipe` — pipe segments and fittings
+- `ifcPlus:Duct` — duct segments and fittings
+
 ---
 
-## Object Properties
-
+## Object Properties (Shortcut Relations)
 
 ### Spatial Relationships
 
@@ -69,16 +71,15 @@ In the base IFC schema, property sets are linked to objects through `ifc:IfcRelD
 
 These properties are inverses of each other.
 
-
 ### Port Relationships
 
-Ports are connection points on distribution elements. The IFC Plus ontology introduces shortcut properties that directly link elements to their ports without requiring traversal through `ifc:IfcRelNests` relationships.
+Ports are connection points on distribution elements. IFC Plus introduces shortcut properties that directly link elements to their ports and expose **directed** port-to-port connectivity.
 
 <img src="doc/Feeds.svg" width="1200">
 
 #### ifcPlus:HasPort / ifcPlus:IsPortOf
 
-The `ifcPlus:HasPort` property directly connects an `ifc:IfcDistributionElement` to its `ifc:IfcDistributionPort` instances. In the base IFC schema, this relationship requires navigating through an `ifc:IfcRelNests` entity using `ifc:IsNestedBy`, `ifc:RelatingObject`, and `ifc:RelatedObjects`. The shortcut property eliminates this indirection.
+The `ifcPlus:HasPort` property directly connects an `ifc:IfcDistributionElement` to its `ifc:IfcDistributionPort` instances. In the base IFC schema, this relationship requires navigating through an `ifc:IfcRelNests` entity using `ifc:IsNestedBy`, `ifc:RelatingObject`, and `ifc:RelatedObjects`.
 
 | Property | Domain | Range |
 |----------|--------|-------|
@@ -89,33 +90,37 @@ These properties are inverses of each other.
 
 #### ifcPlus:FeedsPort / ifcPlus:IsFedByPort
 
-The `ifcPlus:FeedsPort` and `ifcPlus:IsFedByPort` properties establish directional relationships between ports based on their flow direction. A port with `FlowDirection = SOURCE` feeds into another element, while a port with `FlowDirection = SINK` receives flow. These properties shortcut the path through `ifc:IfcRelConnectsPorts` using `ifc:RelatingPort` and `ifc:RelatedPort`.
+The `ifcPlus:FeedsPort` and `ifcPlus:IsFedByPort` properties establish directional relationships between ports based on `FlowDirection`. A port with `FlowDirection = SOURCE` is connected to a `FlowDirection = SINK` port. This shortcuts the path through `ifc:IfcRelConnectsPorts`.
 
 | Property | Domain | Range |
 |----------|--------|-------|
-| `ifcPlus:FeedsPort` | `ifc:IfcDistributionPort` | `ifc:IfcDistributionFlowElement` |
-| `ifcPlus:IsFedByPort` | `ifc:IfcDistributionFlowElement` | `ifc:IfcDistributionPort` |
+| `ifcPlus:FeedsPort` | `ifc:IfcDistributionPort` | `ifc:IfcDistributionPort` |
+| `ifcPlus:IsFedByPort` | `ifc:IfcDistributionPort` | `ifc:IfcDistributionPort` |
 
 These properties are inverses of each other.
+
+> Note: Some internal rules may additionally use port connectivity to infer element-level relations.
 
 ### Flow and Connectivity Relationships
 
-#### ifcPlus:Feeds / ifcPlus:IsFedBy
+#### ifcPlus:connectedTo / ifcPlus:isConnectedFrom (renamed from Feeds/IsFedBy)
 
-The `ifcPlus:Feeds` property provides a direct connection between two `ifc:IfcDistributionFlowElement` instances, indicating that one element supplies a medium to another. This abstracts away the port-level details and the intermediate `ifc:IfcRelConnectsPorts` relationship.
+`ifcPlus:connectedTo` provides a **directed adjacency** between two `ifc:IfcDistributionFlowElement` instances derived from port connectivity and flow direction. It abstracts away explicit traversal through `ifc:IfcRelConnectsPorts`.
 
 | Property | Domain | Range |
 |----------|--------|-------|
-| `ifcPlus:Feeds` | `ifc:IfcDistributionFlowElement` | `ifc:IfcDistributionFlowElement` |
-| `ifcPlus:IsFedBy` | `ifc:IfcDistributionFlowElement` | `ifc:IfcDistributionFlowElement` |
+| `ifcPlus:connectedTo` | `ifc:IfcDistributionFlowElement` | `ifc:IfcDistributionFlowElement` |
+| `ifcPlus:isConnectedFrom` | `ifc:IfcDistributionFlowElement` | `ifc:IfcDistributionFlowElement` |
 
 These properties are inverses of each other.
+
+> Legacy naming: earlier versions used `ifcPlus:Feeds` / `ifcPlus:IsFedBy`. The documentation now uses `connectedTo` terminology.
 
 #### ifcPlus:FeedsIndirectly / ifcPlus:IsFedByIndirectly
 
 <img src="doc/ConnectsTo.svg" width="1200">
 
-The `ifcPlus:FeedsIndirectly` property is a **transitive property** that connects flow carriers (pipes, ducts, fittings) that are part of the same flow path, even when separated by multiple intermediate segments. Because this property is transitive, if element A feeds element B, and element B feeds element C, then A also feeds C indirectly.
+The `ifcPlus:FeedsIndirectly` property is a **transitive property** over flow carriers that expresses reachability along the carrier network.
 
 | Property | Domain | Range | Type |
 |----------|--------|-------|------|
@@ -126,7 +131,7 @@ These properties are inverses of each other.
 
 #### ifcPlus:IsConnectedTo / ifcPlus:IsConnectedFrom
 
-These properties establish that two devices are connected through some path of flow carriers (pipes, ducts, or wires). Unlike the `Feeds` properties that work at the flow element level, these properties specifically connect `ifcPlus:Device` instances, abstracting away the intermediate flow carriers entirely.
+These properties establish that two **devices** are functionally connected through some path of flow carriers. This collapses intermediate pipes/ducts/fittings to expose device-level dependencies.
 
 | Property | Domain | Range |
 |----------|--------|-------|
@@ -135,21 +140,29 @@ These properties establish that two devices are connected through some path of f
 
 These properties are inverses of each other.
 
+Medium-specific subproperties:
+- `ifcPlus:IsConnectedToByPipe` / `ifcPlus:IsConnectedFromByPipe`
+- `ifcPlus:IsConnectedToByDuct` / `ifcPlus:IsConnectedFromByDuct`
+
+---
+
 ## Reasoning
 
-The IFC Plus ontology relies on custom inference rules to derive shortcut properties from the underlying IFC data. Because the required reasoning patterns exceed what standard OWL 2 profiles (RL, DL, EL) can express, we use GraphDB's custom ruleset mechanism.
+IFC Plus relations are derived from underlying IFC/ifcOWL patterns. In practice, inference is performed via SHACL-SPARQL rules (and OWL entailments for subclassing/transitivity). The rules materialize shortcut relations so SPARQL queries do not need to traverse verbose IFC relationship structures.
 
 | Rule | Description |
 |------|-------------|
 | `ifcHasPropertySet` | Derives `ifcPlus:HasPropertySet` by traversing `ifc:IsDefinedBy` → `ifc:IfcRelDefinesByProperties` → `ifc:RelatingPropertyDefinition`. |
 | `ifcHasLocation` | Derives `ifcPlus:HasLocation` by traversing `ifc:ContainsElements` → `ifc:IfcRelContainedInSpatialStructure` → `ifc:RelatedElements`. |
 | `ifcHasPort` | Derives `ifcPlus:HasPort` by traversing `ifc:IsNestedBy` → `ifc:IfcRelNests` → `ifc:RelatedObjects`. |
-| `ifcFeedsPortA/B` | Derives `ifcPlus:FeedsPort` between ports connected via `ifc:IfcRelConnectsPorts`, respecting `FlowDirection` (SOURCE → SINK). Two rules handle both port assignment patterns. |
-| `ifcFeeds` | Derives `ifcPlus:Feeds` between distribution elements when their ports are connected via `ifcPlus:FeedsPort`. |
-| `ifcFeedsIndirectly` | Derives `ifcPlus:FeedsIndirectly` between flow carriers. Transitivity (defined in axioms) then propagates this relationship along chains of segments and fittings. |
-| `ifcIsConnectedToDirect` | Derives `ifcPlus:IsConnectedTo` when two devices are separated by a single flow carrier. |
-| `ifcIsConnectedToIndirect` | Derives `ifcPlus:IsConnectedTo` when two devices are separated by multiple flow carriers linked via `ifcPlus:FeedsIndirectly`. |
+| `ifcFeedsPortA/B` | Derives directed `ifcPlus:FeedsPort` between ports connected via `ifc:IfcRelConnectsPorts`, respecting `FlowDirection` (SOURCE → SINK). |
+| `ifcConnectedTo` | Derives `ifcPlus:connectedTo` (formerly `ifcPlus:Feeds`) between distribution flow elements based on `ifcPlus:HasPort` + `ifcPlus:FeedsPort`. |
+| `ifcFeedsIndirectly` | Derives `ifcPlus:FeedsIndirectly` between flow carriers. OWL transitivity then propagates reachability along carrier chains. |
+| `ifcIsConnectedToDirect` | Derives `ifcPlus:IsConnectedTo` when two devices are separated by a single carrier. |
+| `ifcIsConnectedToIndirect` | Derives `ifcPlus:IsConnectedTo` when two devices are separated by multiple carriers linked via `ifcPlus:FeedsIndirectly`. |
+
+---
 
 ## Summary
 
-The IFC Plus ontology provides a set of shortcut properties and convenience classes that simplify SPARQL queries over IFC-based building data. 
+IFC Plus provides convenience classes and inferred shortcut properties to simplify SPARQL queries over IFC-based knowledge graphs, especially for building automation use cases where functional connectivity and spatial context matter more than detailed routing.
