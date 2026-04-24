@@ -1,9 +1,9 @@
 
-# IFC Plus Ontology Documentation
+# ifcOWL+ Ontology Documentation
 
 ## Overview
 
-The IFC Plus ontology (`ifcPlus`) extends the standard IFC4x3 ontology (`ifc`) with additional classes and properties designed to simplify queries related to building distribution systems. This extension provides direct relationships between elements that would otherwise require complex path traversals through intermediate entities in the base IFC schema.
+The IFC Plus ontology (`ifcOWL+`) extends the standard IFC4x3 ontology (`ifc`) with additional classes and properties designed to simplify queries related to building distribution systems. This extension provides direct relationships between elements that would otherwise require complex path traversals through intermediate entities in the base IFC schema.
 
 **Namespaces:**
 - `ifc:` — `http://ifcowl.openbimstandards.org/IFC4x3#`
