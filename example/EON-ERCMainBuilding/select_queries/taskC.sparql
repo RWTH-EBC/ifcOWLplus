@@ -1,0 +1,26 @@
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+PREFIX path:    <http://www.ontotext.com/path#>
+PREFIX ifc:     <http://ifcowl.openbimstandards.org/IFC4x3#>
+
+SELECT ?path ?index ?end ?name ?type
+WHERE {
+  	?dst a ifc:IfcBoiler .
+    ?src a ifc:IfcSpaceHeater ;
+        ifc:PredefinedType "RADIATOR" ;
+        ifcPlus:HasLocation ?space .
+    ?space a ifc:IfcSpace ;
+        ifc:Name "42" .
+      SERVICE path:search {
+    <urn:path>
+      path:findPath path:shortestPath ;      path:sourceNode ?src ;
+      path:destinationNode ?dst ;               path:pathIndex ?path ;
+      path:resultBindingIndex ?index ;         path:startNode ?start ;
+      path:endNode ?end .
+    SERVICE <urn:path> {
+      ?start ifcPlus:IsConnectedFromByPipe ?end .
+    }
+  }
+  	OPTIONAL {?start ifc:Name ?name . }
+    OPTIONAL {?start ifc:PredefinedType ?type}
+}
+ORDER BY ?path ?index
