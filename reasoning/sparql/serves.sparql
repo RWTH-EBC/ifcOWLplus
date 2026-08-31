@@ -1,0 +1,25 @@
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ifc:  <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+PREFIX path: <http://www.ontotext.com/path#>
+
+INSERT {
+    GRAPH <http://example.org/inferred> {
+        ?ahu ifcPlus:serves ?space .
+    }
+}
+WHERE {
+    ?ahu a ifc:IfcUnitaryEquipment .
+    ?ahu ifcPlus:hasPart ?start .
+    ?start ifcPlus:isConnectedToByDuct ?otherPart .
+    FILTER NOT EXISTS {
+    	?otherPart ifcPlus:isPartOf ?ahu .
+    }
+	?airTerminal a ifc:IfcAirTerminal .
+
+    ?start ifcPlus:isConnectedTo* ?airTerminal .
+
+    ?airTerminal ifcPlus:hasLocation ?space .
+    ?space a ifc:IfcSpace .
+
+}

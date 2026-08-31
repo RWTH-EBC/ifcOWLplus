@@ -1,0 +1,14 @@
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT {
+    GRAPH <http://example.org/inferred> {
+        ?space1 ifcPlus:isAdjacentTo ?space2 .
+    }
+}
+WHERE {
+    GRAPH <http://example.org/inferred> {
+        ?space1 ifcPlus:hasWall ?boundaryElement .
+        ?space2 ifcPlus:hasWall ?boundaryElement .
+    }
+    FILTER(?space1 != ?space2)
+}

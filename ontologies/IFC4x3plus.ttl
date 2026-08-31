@@ -47,137 +47,303 @@ ifc:IfcDuctFitting rdfs:subClassOf ifcPlus:Duct .
 
 # ------------------ Has Property Set ----------------------
 
-ifcPlus:HasPropertySet a owl:ObjectProperty ;
-    rdfs:label "Has Property Set" ;
-    rdfs:comment "The HasPropertySet property indicates that an IfcObject has an IfcPropertySet." ;
+ifcPlus:hasPropertySet a owl:ObjectProperty ;
+    rdfs:label "has Property Set" ;
+    rdfs:comment "The hasPropertySet property indicates that an IfcObject has an IfcPropertySet." ;
     rdfs:domain ifc:IfcObject ;
     rdfs:range ifc:IfcPropertySet ;
-    owl:inverseOf ifcPlus:IsPropertySetOf .
+    owl:inverseOf ifcPlus:isPropertySetOf ;
+    owl:propertyChainAxiom (
+        ifc:IsDefinedBy
+        ifc:RelatingPropertyDefinition
+    ) .
 
-ifcPlus:IsPropertySetOf a owl:ObjectProperty ;
-    rdfs:label "Is Property Set Of" ;
-    rdfs:comment "The IsPropertySetOf property indicates that an IfcPropertySet belongs to an IfcObject." ;
+ifcPlus:isPropertySetOf a owl:ObjectProperty ;
+    rdfs:label "is Property Set Of" ;
+    rdfs:comment "The isPropertySetOf property indicates that an IfcPropertySet belongs to an IfcObject." ;
     rdfs:domain ifc:IfcPropertySet ;
     rdfs:range ifc:IfcObject ;
-    owl:inverseOf ifcPlus:HasPropertySet .
+    owl:inverseOf ifcPlus:hasPropertySet .
+
+# ------------------ Space Architecture ----------------------
+
+ifcPlus:hasWall a owl:ObjectProperty ;
+    rdfs:label "has Wall" ;
+    rdfs:comment "Indicates a bounding wall of a space." ;
+    rdfs:domain ifc:IfcSpace ;
+    rdfs:range ifc:IfcWall .
+
+ifcPlus:isAdjacentTo a owl:SymmetricProperty, owl:ObjectProperty ;
+    rdfs:label "is Adjacent To" ;
+    rdfs:comment "Indicates that two spaces share a physical boundary (wall, slab, etc.)." ;
+    rdfs:domain ifc:IfcSpace ;
+    rdfs:range ifc:IfcSpace .
+
+# ------------------ Spatial Hierarchy ----------------------
+
+ifcPlus:hasStorey a owl:ObjectProperty ;
+    rdfs:label "has Storey" ;
+    rdfs:comment "Indicates that a building contains a specific storey." ;
+    rdfs:domain ifc:IfcBuilding ;
+    rdfs:range ifc:IfcBuildingStorey ;
+    owl:inverseOf ifcPlus:isStoreyOf .
+
+ifcPlus:isStoreyOf a owl:ObjectProperty ;
+    rdfs:label "is Storey Of" ;
+    rdfs:comment "Indicates that a storey belongs to a specific building." ;
+    rdfs:domain ifc:IfcBuildingStorey ;
+    rdfs:range ifc:IfcBuilding ;
+    owl:inverseOf ifcPlus:hasStorey .
+
+ifcPlus:hasSpace a owl:ObjectProperty ;
+    rdfs:label "has Space" ;
+    rdfs:comment "Indicates that a building storey contains a specific space." ;
+    rdfs:domain ifc:IfcBuildingStorey ;
+    rdfs:range ifc:IfcSpace ;
+    owl:inverseOf ifcPlus:isSpaceOf .
+
+ifcPlus:isSpaceOf a owl:ObjectProperty ;
+    rdfs:label "is Space Of" ;
+    rdfs:comment "Indicates that a space belongs to a specific building storey." ;
+    rdfs:domain ifc:IfcSpace ;
+    rdfs:range ifc:IfcBuildingStorey ;
+    owl:inverseOf ifcPlus:hasSpace .
+
+# -------------------- Has Part ----------------------
+
+ifcPlus:hasPart a owl:ObjectProperty ;
+    rdfs:label "has Part" ;
+    rdfs:comment "A property representing the top-down decomposition of objects." ;
+    owl:propertyChainAxiom (
+        ifc:IsDecomposedBy
+        ifc:RelatedObjects
+    ) .
+
+ifcPlus:isPartOf a owl:ObjectProperty ;
+    rdfs:label "is Part Of" ;
+    rdfs:comment "A property representing the bottom-up assembly of objects." ;
+    owl:inverseOf ifcPlus:hasPart .
 
 # ------------------ Has Location ----------------------
 
-ifcPlus:HasLocation a owl:ObjectProperty ;
-    rdfs:label "Has Location" ;
-    rdfs:comment "The HasLocation property indicates that an IfcDistributionElement has a location in the building." ;
+ifcPlus:hasLocation a owl:ObjectProperty ;
+    rdfs:label "has Location" ;
+    rdfs:comment "The hasLocation property indicates that an IfcDistributionElement has a location in the building." ;
     rdfs:domain ifc:IfcDistributionElement ;
     rdfs:range ifc:IfcSpatialStructureElement ;
-    owl:inverseOf ifcPlus:IsLocatedIn .
+    owl:inverseOf ifcPlus:isLocationOf .
 
-ifcPlus:IsLocatedIn a owl:ObjectProperty ;
-    rdfs:label "Is Located In" ;
-    rdfs:comment "The IsLocatedIn property indicates that an IfcSpatialStructureElement contains an IfcDistributionElement." ;
+ifcPlus:isLocationOf a owl:ObjectProperty ;
+    rdfs:label "is Location Of" ;
+    rdfs:comment "The isLocationOf property indicates that an IfcSpatialStructureElement contains an IfcDistributionElement." ;
     rdfs:domain ifc:IfcSpatialStructureElement ;
     rdfs:range ifc:IfcDistributionElement ;
-    owl:inverseOf ifcPlus:HasLocation .
+    owl:inverseOf ifcPlus:hasLocation .
 
 # ------------ Has Port ----------------
 
-ifcPlus:HasPort a owl:ObjectProperty ;
-    rdfs:label "Has Port" ;
-    rdfs:comment "The HasPort property indicates that an IfcDistributionElement has an IfcDistributionPort." ;
+ifcPlus:hasPort a owl:ObjectProperty ;
+    rdfs:label "has Port" ;
+    rdfs:comment "The hasPort property indicates that an IfcDistributionElement has an IfcDistributionPort." ;
     rdfs:domain ifc:IfcDistributionElement ;
     rdfs:range ifc:IfcDistributionPort ;
-    owl:inverseOf ifcPlus:IsPortOf .
+    owl:inverseOf ifcPlus:isPortOf ;
+    owl:propertyChainAxiom (
+        ifc:IsNestedBy
+        ifc:RelatedObjects
+    ) .
 
-ifcPlus:IsPortOf a owl:ObjectProperty ;
-    rdfs:label "Is Port Of" ;
-    rdfs:comment "The IsPortOf property indicates that an IfcDistributionPort is part of an IfcDistributionElement." ;
+ifcPlus:isPortOf a owl:ObjectProperty ;
+    rdfs:label "is Port Of" ;
+    rdfs:comment "The isPortOf property indicates that an IfcDistributionPort is part of an IfcDistributionElement." ;
     rdfs:domain ifc:IfcDistributionPort ;
     rdfs:range ifc:IfcDistributionElement ;
-    owl:inverseOf ifcPlus:HasPort .
+    owl:inverseOf ifcPlus:hasPort .
 
 # ------------------ Feeds Port ----------------------
 
-ifcPlus:FeedsPort a owl:ObjectProperty ;
-    rdfs:label "Feeds Port" ;
-    rdfs:comment "The FeedsPort property indicates that an IfcDistributionPort feeds an IfcDistributionFlowElement." ;
+ifcPlus:feedsPort a owl:ObjectProperty ;
+    rdfs:label "feeds Port" ;
+    rdfs:comment "The feedsPort property indicates that an IfcDistributionPort feeds an IfcDistributionFlowElement." ;
     rdfs:domain ifc:IfcDistributionPort ;
     rdfs:range ifc:IfcDistributionFlowElement ;
-    owl:inverseOf ifcPlus:IsFedByPort .
+    owl:inverseOf ifcPlus:isFedByPort .
 
-ifcPlus:IsFedByPort a owl:ObjectProperty ;
-    rdfs:label "Is Fed By Port" ;
-    rdfs:comment "The IsFedByPort property indicates that an IfcDistributionFlowElement is fed by an IfcDistributionPort." ;
+ifcPlus:isFedByPort a owl:ObjectProperty ;
+    rdfs:label "is Fed By Port" ;
+    rdfs:comment "The isFedByPort property indicates that an IfcDistributionFlowElement is fed by an IfcDistributionPort." ;
     rdfs:domain ifc:IfcDistributionFlowElement ;
     rdfs:range ifc:IfcDistributionPort ;
-    owl:inverseOf ifcPlus:FeedsPort .
+    owl:inverseOf ifcPlus:feedsPort .
 
 # ------------------ Feeds ----------------------
 
-ifcPlus:Feeds a owl:ObjectProperty ;
-    rdfs:label "Feeds" ;
-    rdfs:comment "The Feeds property indicates that an IfcDistributionFlowElement is fed by an IfcDistributionFlowElement." ;
+ifcPlus:feeds a owl:ObjectProperty ;
+    rdfs:label "feeds" ;
+    rdfs:comment "The feeds property indicates that an IfcDistributionFlowElement is fed by an IfcDistributionFlowElement." ;
     rdfs:domain ifc:IfcDistributionFlowElement ;
     rdfs:range ifc:IfcDistributionFlowElement ;
-    owl:inverseOf ifcPlus:IsFedBy .
+    owl:inverseOf ifcPlus:isFedBy ;
+    owl:propertyChainAxiom (
+        ifcPlus:hasPort
+        ifcPlus:feedsPort
+        ifcPlus:isPortOf
+    ) .
 
-ifcPlus:IsFedBy a owl:ObjectProperty ;
-    rdfs:label "Is Fed By" ;
-    rdfs:comment "The IsFedBy property indicates that an IfcDistributionFlowElement is fed by an IfcDistributionFlowElement." ;
+ifcPlus:isFedBy a owl:ObjectProperty ;
+    rdfs:label "is Fed By" ;
+    rdfs:comment "The isFedBy property indicates that an IfcDistributionFlowElement is fed by an IfcDistributionFlowElement." ;
     rdfs:domain ifc:IfcDistributionFlowElement ;
     rdfs:range ifc:IfcDistributionFlowElement ;
-    owl:inverseOf ifcPlus:Feeds .
+    owl:inverseOf ifcPlus:feeds .
 
 
 # ------------------ Feeds Indirectly ----------------------
 
-ifcPlus:FeedsIndirectly a owl:TransitiveProperty ;
+ifcPlus:feedsIndirectly a owl:TransitiveProperty ;
     rdfs:domain ifcPlus:FlowCarrier ;
     rdfs:range ifcPlus:FlowCarrier ;
+    rdfs:label "feeds Indirectly" ;
+    rdfs:comment "The feedsIndirectly property indicates that an ifc:IfcFlowSegment or ifc:IfcFlowFitting feeds another ifc:IfcFlowSegment or ifc:IfcFlowFitting indirectly." ;
+    owl:inverseOf ifcPlus:isFedByIndirectly .
 
-    rdfs:label "Feeds Indirectly" ;
-    rdfs:comment "The FeedsIndirectly property indicates that an ifc:IfcFlowSegment or ifc:IfcFlowFitting feeds another ifc:IfcFlowSegment or ifc:IfcFlowFitting indirectly." ;
-    owl:inverseOf ifcPlus:IsFedByIndirectly .
-
-ifcPlus:IsFedByIndirectly a owl:TransitiveProperty ;
+ifcPlus:isFedByIndirectly a owl:TransitiveProperty ;
     rdfs:domain ifcPlus:FlowCarrier ;
     rdfs:range ifcPlus:FlowCarrier ;
-
-    rdfs:label "Is Fed By Indirectly" ;
-    rdfs:comment "The IsFedByIndirectly property indicates that an ifc:IfcFlowSegment or ifc:IfcFlowFitting is fed by another ifc:IfcFlowSegment or ifc:IfcFlowFitting indirectly." ;
-    owl:inverseOf ifcPlus:FeedsIndirectly .
+    rdfs:label "is Fed By Indirectly" ;
+    rdfs:comment "The isFedByIndirectly property indicates that an ifc:IfcFlowSegment or ifc:IfcFlowFitting is fed by another ifc:IfcFlowSegment or ifc:IfcFlowFitting indirectly." ;
+    owl:inverseOf ifcPlus:feedsIndirectly .
 
 # ------------------ Is Connected To ----------------------
 
-ifcPlus:IsConnectedTo a owl:ObjectProperty ;
-    rdfs:label "Is Connected To" ;
-    rdfs:comment "The IsConnectedTo property indicates that an element is supplying some medium to another element through pipes, ducts or wires." ;
+ifcPlus:isConnectedTo a owl:ObjectProperty ;
+    rdfs:label "is Connected To" ;
+    rdfs:comment "The isConnectedTo property indicates that an element is supplying some medium to another element through pipes, ducts or wires." ;
     rdfs:domain ifcPlus:Device ;
     rdfs:range ifcPlus:Device ;
-    owl:inverseOf ifcPlus:IsConnectedFrom .
+    owl:inverseOf ifcPlus:isConnectedFrom .
 
-ifcPlus:IsConnectedFrom a owl:ObjectProperty ;
-    rdfs:label "Is Connected From" ;
-    rdfs:comment "The IsConnectedFrom property indicates that an element is receiving some medium from another element through pipes, ducts or wires." ;
+ifcPlus:isConnectedFrom a owl:ObjectProperty ;
+    rdfs:label "is Connected From" ;
+    rdfs:comment "The isConnectedFrom property indicates that an element is receiving some medium from another element through pipes, ducts or wires." ;
     rdfs:domain ifcPlus:Device ;
     rdfs:range ifcPlus:Device ;
-    owl:inverseOf ifcPlus:IsConnectedTo .
+    owl:inverseOf ifcPlus:isConnectedTo .
 
-ifcPlus:IsConnectedToByPipe a owl:ObjectProperty ;
-    rdfs:subPropertyOf ifcPlus:IsConnectedTo ;
-    rdfs:label "Is Connected By Pipe" ;
-    rdfs:comment "The IsConnectedByPipe property indicates that an element is supplying some medium to another element through pipes." .
+ifcPlus:isConnectedToByPipe a owl:ObjectProperty ;
+    rdfs:subPropertyOf ifcPlus:isConnectedTo ;
+    rdfs:label "is Connected By Pipe" ;
+    rdfs:comment "The isConnectedByPipe property indicates that an element is supplying some medium to another element through pipes." .
 
-ifcPlus:IsConnectedFromByPipe rdfs:subPropertyOf ifcPlus:IsConnectedFrom ;
-    rdfs:label "Is Connected From By Pipe" ;
-    rdfs:comment "The IsConnectedFromByPipe property indicates that an element is receiving some medium from another element through pipes." ;
-    owl:inverseOf ifcPlus:IsConnectedToByPipe .
+ifcPlus:isConnectedFromByPipe rdfs:subPropertyOf ifcPlus:isConnectedFrom ;
+    rdfs:label "is Connected From By Pipe" ;
+    rdfs:comment "The isConnectedFromByPipe property indicates that an element is receiving some medium from another element through pipes." ;
+    owl:inverseOf ifcPlus:isConnectedToByPipe .
 
-ifcPlus:IsConnectedToByDuct a owl:ObjectProperty ;
-    rdfs:subPropertyOf ifcPlus:IsConnectedTo ;
-    rdfs:label "Is Connected By Duct" ;
-    rdfs:comment "The IsConnectedByDuct property indicates that an element is supplying some medium to another element through ducts." .
+ifcPlus:isConnectedToByDuct a owl:ObjectProperty ;
+    rdfs:subPropertyOf ifcPlus:isConnectedTo ;
+    rdfs:label "is Connected By Duct" ;
+    rdfs:comment "The isConnectedByDuct property indicates that an element is supplying some medium to another element through ducts." .
 
-ifcPlus:IsConnectedFromByDuct rdfs:subPropertyOf ifcPlus:IsConnectedFrom ;
-    rdfs:label "Is Connected From By Duct" ;
-    rdfs:comment "The IsConnectedFromByDuct property indicates that an element is receiving some medium from another element through ducts." ;
-    owl:inverseOf ifcPlus:IsConnectedToByDuct .
+ifcPlus:isConnectedFromByDuct rdfs:subPropertyOf ifcPlus:isConnectedFrom ;
+    rdfs:label "is Connected From By Duct" ;
+    rdfs:comment "The isConnectedFromByDuct property indicates that an element is receiving some medium from another element through ducts." ;
+    owl:inverseOf ifcPlus:isConnectedToByDuct .
 
+# ------------ Supplies and Returns ---------------
 
+ifcPlus:supplies a owl:ObjectProperty ;
+    rdfs:label "supplies" ;
+    rdfs:comment "The supplies property indicates that an element is supplying some medium to another element." ;
+    rdfs:domain ifcPlus:Device ;
+    rdfs:range ifcPlus:Device ;
+    owl:inverseOf ifcPlus:isSuppliedBy .
+
+ifcPlus:isSuppliedBy a owl:ObjectProperty ;
+    rdfs:label "is Supplied By" ;
+    rdfs:comment "The isSuppliedBy property indicates that an element is receiving some medium from another element." ;
+    rdfs:domain ifcPlus:Device ;
+    rdfs:range ifcPlus:Device ;
+    owl:inverseOf ifcPlus:supplies .
+
+ifcPlus:suppliesAirTo a owl:ObjectProperty ;
+    rdfs:subPropertyOf ifcPlus:supplies ;
+    rdfs:label "supplies Air To" ;
+    rdfs:comment "The suppliesAirTo property indicates that an element is supplying air to another element." .
+
+ifcPlus:suppliesWaterTo a owl:ObjectProperty ;
+    rdfs:subPropertyOf ifcPlus:supplies ;
+    rdfs:label "supplies Water To" ;
+    rdfs:comment "The suppliesWaterTo property indicates that an element is supplying water to another element." .
+
+ifcPlus:returns a owl:ObjectProperty ;
+    rdfs:label "returns" ;
+    rdfs:comment "The returns property indicates that an element is returning some medium to another element." ;
+    rdfs:domain ifcPlus:Device ;
+    rdfs:range ifcPlus:Device ;
+    owl:inverseOf ifcPlus:isReturnOf .
+
+ifcPlus:isReturnOf a owl:ObjectProperty ;
+    rdfs:label "is Return Of" ;
+    rdfs:comment "The isReturnOf property indicates that an element is returning some medium to another element." ;
+    rdfs:domain ifcPlus:Device ;
+    rdfs:range ifcPlus:Device ;
+    owl:inverseOf ifcPlus:isSuppliedBy .
+
+ifcPlus:returnsAirTo a owl:ObjectProperty ;
+    rdfs:subPropertyOf ifcPlus:returns ;
+    rdfs:label "returns Air To" ;
+    rdfs:comment "The returnsAirTo property indicates that an element is returning air to another element." .
+
+ifcPlus:returnsWaterTo a owl:ObjectProperty ;
+    rdfs:subPropertyOf ifcPlus:returns ;
+    rdfs:label "returns Water To" ;
+    rdfs:comment "The returnsWaterTo property indicates that an element is returning water to another element." .
+
+# ------------------ Serves and Served By ----------------------
+
+ifcPlus:serves a owl:ObjectProperty ;
+    rdfs:label "serves" ;
+    rdfs:comment "The serves property indicates that an equipment serves a space." ;
+    rdfs:domain ifcPlus:Device ;
+    rdfs:range ifcPlus:Device ;
+    owl:inverseOf ifcPlus:isServedBy .
+
+ifcPlus:isServedBy a owl:ObjectProperty ;
+    rdfs:label "is Served By" ;
+    rdfs:comment "The isServedBy property indicates that a space is served by an equipment." ;
+    rdfs:domain ifcPlus:Device ;
+    rdfs:range ifcPlus:Device ;
+    owl:inverseOf ifcPlus:serves .
+
+# ------------------ Systems ----------------------
+
+ifcPlus:System a owl:Class ;
+    rdfs:label "System" ;
+    rdfs:comment "A System is a collection of elements that work together to perform a specific function. Systems are typically used to represent the various building services, such as HVAC, electrical, plumbing, etc." .
+
+ifcPlus:HeatingSystem rdfs:subClassOf ifcPlus:System ;
+    rdfs:label "Heating System" ;
+    rdfs:comment "A Heating System is a collection of elements that work together to provide heating to a building." .
+
+ifcPlus:CoolingSystem rdfs:subClassOf ifcPlus:System ;
+    rdfs:label "Cooling System" ;
+    rdfs:comment "A Cooling System is a collection of elements that work together to provide cooling to a building." .
+
+ifcPlus:VentilationSystem rdfs:subClassOf ifcPlus:System ;
+    rdfs:label "Ventilation System" ;
+    rdfs:comment "A Ventilation System is a collection of elements that work together to provide ventilation to a building." .
+
+ifcPlus:belongsTo a owl:ObjectProperty ;
+    rdfs:label "belongs To System" ;
+    rdfs:comment "The belongsToSystem property indicates that an IfcDistributionElement is part of an IfcSystem." ;
+    rdfs:domain ifcPlus:Device ;
+    rdfs:range ifc:IfcSystem ;
+    owl:inverseOf ifcPlus:hasDevice .
+
+ifcPlus:hasDevice a owl:ObjectProperty ;
+    rdfs:label "has Device" ;
+    rdfs:comment "The hasDevice property indicates that an IfcSystem contains an IfcDistributionElement." ;
+    rdfs:domain ifc:IfcSystem ;
+    rdfs:range ifcPlus:Device ;
+    owl:inverseOf ifcPlus:belongsToSystem .
