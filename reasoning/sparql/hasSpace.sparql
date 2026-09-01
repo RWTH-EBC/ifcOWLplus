@@ -1,0 +1,33 @@
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ifc:  <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT {
+    GRAPH <http://example.org/inferred> {
+        ?building ifcPlus:hasStorey ?storey .
+        ?storey ifcPlus:hasSpace ?space .
+    }
+}
+WHERE {
+    {
+        # Infer Building -> Storey
+        ?building rdf:type ifc:IfcBuilding .
+        
+        ?relAgg1 rdf:type ifc:IfcRelAggregates ;
+                 ifc:RelatingObject ?building ;
+                 ifc:RelatedObjects ?storey .
+                 
+        ?storey rdf:type ifc:IfcBuildingStorey .
+    }
+    UNION
+    {
+        # Infer Storey -> Space
+        ?storey rdf:type ifc:IfcBuildingStorey .
+        
+        ?relAgg2 rdf:type ifc:IfcRelAggregates ;
+                 ifc:RelatingObject ?storey ;
+                 ifc:RelatedObjects ?space .
+                 
+        ?space rdf:type ifc:IfcSpace .
+    }
+}

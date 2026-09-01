@@ -1,0 +1,28 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT {
+    ?system a ?specificSystemClass .
+    ?element ifcPlus:belongsTo ?system .
+}
+WHERE {
+
+    ?system a ifc:IfcSystem ;
+            ifc:PredefinedType ?systemType .
+
+    ?relAssigns rdf:type ifc:IfcRelAssignsToGroup ;
+                ifc:RelatingGroup ?system ;
+                ifc:RelatedObjects ?element .
+
+    ?element a ifcPlus:Device .
+
+    BIND(
+        IF(CONTAINS(STR(?systemType), "HEATING"), ifcPlus:HeatingSystem,
+        IF(CONTAINS(STR(?systemType), "COOLING"), ifcPlus:CoolingSystem,
+        IF(CONTAINS(STR(?systemType), "VENTILATION"), ifcPlus:VentilationSystem,
+        ifcPlus:System))) AS ?specificSystemClass
+    )
+}

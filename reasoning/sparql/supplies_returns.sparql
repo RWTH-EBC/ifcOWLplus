@@ -1,0 +1,44 @@
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ifc:  <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT {
+    GRAPH <http://example.org/inferred> {
+        ?start ?newPredicate ?end .
+    }
+}
+
+# SELECT DISTINCT ?start ?startSystem ?startId ?end ?endSystem ?endId ?systemString
+WHERE {
+    ?start rdf:type ifcPlus:Device ;
+		ifcPlus:feeds ?startFlow ;
+    	ifc:GlobalId ?startId .
+    ?startFlow rdf:type ifcPlus:FlowCarrier ;
+               ifcPlus:feedsIndirectly* ?endFlow ;
+               ifcPlus:hasPropertySet ?psetStart .
+    ?endFlow rdf:type ifcPlus:FlowCarrier ;
+             ifcPlus:feeds ?end ;
+             ifcPlus:hasPropertySet ?psetEnd .
+    ?end rdf:type ifcPlus:Device ;
+        ifc:GlobalId ?endId .
+
+	?psetStart ifc:Name "Mechanical" .
+	?psetStart ifc:HasProperties ?prop .
+ 	?prop ifc:NominalValue ?startSystem .
+	?prop ifc:Name "System Classification" .
+
+    ?psetEnd ifc:Name "Mechanical" .
+    ?psetEnd ifc:HasProperties ?prop2 .
+    ?prop2 ifc:NominalValue ?endSystem .
+    ?prop2 ifc:Name "System Classification" .
+
+	FILTER(STR(?startSystem) = STR(?endSystem))
+	BIND(STR(?startSystem) AS ?systemString)
+    # when i add this the query suddenly returns no result
+    VALUES (?systemString ?newPredicate) {
+        ("Supply Air"      ifcPlus:suppliesAirTo)
+        ("Supply Return"   ifcPlus:returnsAirTo)
+        ("Hydronic Supply" ifcPlus:suppliesWaterTo)
+        ("Hydronic Return" ifcPlus:returnsWaterTo)
+    }
+}

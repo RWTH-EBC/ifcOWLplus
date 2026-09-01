@@ -1,0 +1,16 @@
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ifc:  <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT {
+    GRAPH <http://example.org/inferred> {
+        ?space ifcPlus:hasWall ?wall .
+    }
+}
+WHERE {
+    ?space rdf:type ifc:IfcSpace .
+    ?relSpaceBoundary rdf:type ifc:IfcRelSpaceBoundary ;
+        ifc:RelatingSpace ?space ;
+        ifc:RelatedBuildingElement ?wall .
+  ?wall rdf:type ifc:IfcWall .
+}

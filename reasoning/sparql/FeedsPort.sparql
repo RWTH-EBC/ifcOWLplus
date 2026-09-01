@@ -1,0 +1,26 @@
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ifc:  <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT {
+    GRAPH <http://example.org/inferred> {
+        ?sourcePort ifcPlus:feedsPort ?sinkPort .
+    }
+}
+WHERE {
+  ?sourcePort rdf:type ifc:IfcDistributionPort ;
+              ifc:FlowDirection "SOURCE" .
+
+  ?sinkPort rdf:type ifc:IfcDistributionPort ;
+            ifc:FlowDirection "SINK" .
+
+  ?con rdf:type ifc:IfcRelConnectsPorts .
+
+  {
+    ?con ifc:RelatingPort ?sinkPort ;
+         ifc:RelatedPort ?sourcePort .
+  } UNION {
+    ?con ifc:RelatingPort ?sourcePort ;
+         ifc:RelatedPort ?sinkPort .
+  }
+}

@@ -1,0 +1,27 @@
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ifc:  <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+
+INSERT {
+    GRAPH <http://example.org/inferred> {
+        ?start ?connectionProperty ?end .
+    }
+}
+WHERE {
+
+  VALUES (?elementType ?connectionProperty) {
+    (ifcPlus:Duct ifcPlus:isConnectedToByDuct)
+    (ifcPlus:Pipe ifcPlus:isConnectedToByPipe)
+  }
+
+  ?start rdf:type ifcPlus:Device ;
+         ifcPlus:feeds ?startElement .
+
+  ?startElement rdf:type ?elementType ;
+                (ifcPlus:feedsIndirectly)* ?endElement .
+
+  ?endElement rdf:type ?elementType ;
+              ifcPlus:feeds ?end .
+
+  ?end rdf:type ifcPlus:Device .
+}
