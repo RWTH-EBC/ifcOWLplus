@@ -4,7 +4,7 @@ PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
 PREFIX path: <http://www.ontotext.com/path#>
 
 INSERT {
-    GRAPH <http://example.org/inferred> {
+    GRAPH <http://example.org/inferred/> {
         ?ahu ifcPlus:serves ?space .
     }
 }

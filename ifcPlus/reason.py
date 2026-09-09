@@ -7,21 +7,25 @@ current_directory = pathlib.Path(os.path.dirname(os.path.abspath(__file__)))
 QUERY_FOLDER = current_directory.parent.joinpath("reasoning/sparql")
 QUERY_FILES = [
     # spatial relationships
-    "HasLocation.sparql",
+    "hasLocation.sparql",
     "hasWall.sparql",
     "isAdjacentTo.sparql",
     "IsExternal.sparql",
+    "contains.sparql",
 
     # connectivity relationships
-    "FeedsPort.sparql",
-    "FeedsIndirectly.sparql",
+    "feedsPort.sparql",
+    "feedsIndirectly.sparql",
     "isConnectedTo.sparql",
-    "supplies_returns.sparql",
+    # "supplies_returns.sparql",
+    "supplies_returns_HLS.sparql",
     "serves.sparql",
 
     # system
     # "assemblyConnection.sparql",
     "belongsToSystem.sparql",
+
+    "supplies_returns_HLS.sparql",
 ]
 
 
@@ -29,7 +33,7 @@ def read_queries() -> typing.List[typing.Tuple[str, str]]:
 
     queries = []
     for file in QUERY_FILES:
-        with open(QUERY_FOLDER.joinpath(file), 'r') as f:
+        with open(QUERY_FOLDER.joinpath(file), 'r', encoding='utf-8') as f:
             query = f.read()
             queries.append((file, query))
 
@@ -41,6 +45,7 @@ def execute_reasoning(query_callback: typing.Callable) -> dict:
     queries = read_queries()
     results = {}
     for file, query in queries:
+        print(file)
         results[file] = query_callback(query)
 
     return results

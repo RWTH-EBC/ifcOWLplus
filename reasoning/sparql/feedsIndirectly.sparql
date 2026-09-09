@@ -3,7 +3,7 @@ PREFIX ifc:  <http://ifcowl.openbimstandards.org/IFC4x3#>
 PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
 
 INSERT {
-    GRAPH <http://example.org/inferred> {
+    GRAPH <http://example.org/inferred/> {
         ?start ifcPlus:feedsIndirectly ?end .
     }
 }

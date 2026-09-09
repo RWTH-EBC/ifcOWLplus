@@ -5,9 +5,12 @@ PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
 PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
 
 INSERT {
-    ?system a ?specificSystemClass .
-    ?element ifcPlus:belongsTo ?system .
+    GRAPH <http://example.org/inferred/> {
+        ?system a ?specificSystemClass .
+        ?element ifcPlus:belongsTo ?system .
+    }
 }
+
 WHERE {
 
     ?system a ifc:IfcSystem ;

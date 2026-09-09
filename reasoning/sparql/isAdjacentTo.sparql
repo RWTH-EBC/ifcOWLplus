@@ -1,7 +1,7 @@
 PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
 
 INSERT {
-    GRAPH <http://example.org/inferred> {
+    GRAPH <http://example.org/inferred/> {
         ?space1 ifcPlus:isAdjacentTo ?space2 .
     }
 }

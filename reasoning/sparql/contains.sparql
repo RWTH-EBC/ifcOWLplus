@@ -1,0 +1,17 @@
+PREFIX ifcPlus: <http://ifcowl.openbimstandards.org/IFC4x3plus#>
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC4x3#>
+PREFIX vdi3814: <http://www.vdi.de/3814#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+insert {
+	GRAPH <http://example.org/inferred/> {
+		?object ifcPlus:contains ?child .
+    }
+}
+
+where {
+    ?object a ifc:IfcObjectDefinition .
+ 	?object ifc:IsDecomposedBy ?agg .
+    ?agg a ifc:IfcRelAggregates ;
+    	ifc:RelatedObjects ?child .
+}
